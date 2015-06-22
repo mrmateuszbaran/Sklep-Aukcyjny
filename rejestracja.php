@@ -17,9 +17,9 @@
 	}
 ?>
 
-<form name = "form_rejestracja" method = "POST" style = "background-color:lightgray; width:260px; margin:auto; padding:20px; border:1px black solid; text-align:right; color:black;"
+<form name = "form_rejestracja" method = "POST" style = "background-color:lightgray; width:260px; margin:auto; padding:20px; border:1px black solid; text-align:right;"
 	onSubmit = "return sprawdz_form_rejestracja();">
-	<div style = "float:left; line-height:32px; display:inline-block; margin:auto; padding:0px;">
+	<div style = "float:left; line-height:32px; display:inline-block; margin:auto;">
 		Login: <br>
 		Hasło: <br>
 		Imię: <br>
