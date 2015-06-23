@@ -43,9 +43,12 @@
 		border: 1px black solid;
 		margin: 15px auto;
 		padding: 5px;
+		display: inline-block;
+		margin: 5px;
 	}
 	.konto-tabela td:first-child {
 		padding-right: 25px;
+		text-align: right;
 	}
 	.konto-tabela td:nth-child(2) {
 		text-align: right;
@@ -112,22 +115,15 @@
 	require_once("uzytkownik.inc");
 	session_start();
 	
-	//if (!isset($_SESSION['uzytkownik']))
-	//{
-	//	echo "ERROR:Brak uprawnień!";
-	//	exit();
-	//}
 	echo "<div style = \"width:100%; border:0px;\">";
 		echo "<div id = \"konto-menu\">";
 			echo "<span class = \"klikalne\" onClick = \"konto('dane');\">Dane konta</span><br />";
 			echo "<span class = \"klikalne\" onClick = \"konto('adresy');\">Moje adresy</span><br />";
-			//echo "<span class = \"klikalne\" onClick = \"konto('obserwowane');\">Obserwowane aukcje</span><br />";
 			echo "<span class = \"klikalne\" onClick = \"konto('wygrane');\">Wygrane aukcje</span><br />";
 			echo "<span class = \"klikalne\" onClick = \"konto('haslo');\">Zmień hasło</span><br />";
 			echo "<span class = \"klikalne\" onClick = \"konto_usun_potwierdz();\">Usuń konto</span>";
 		echo "</div>";
 		echo "<div id = \"konto-tresc\">";
-			//include $_GET['widok-konto'].".php";
 			include "dane.php";
 		echo "</div>";
 	echo "</div>";
