@@ -1,6 +1,4 @@
 <?php
-	//TODO
-	//Zmien nazwe na "aukcje.php" albo "listaaukcji.php"
 	require_once("baza.php");
 	date_default_timezone_set('Europe/Warsaw');
 	
@@ -20,12 +18,22 @@
 		   $s = "0".$s;
 	   return "$h:$m:$s";
 	}
-	
-	$zapytanie = mysql_query("SELECT * FROM aukcje WHERE czas_koniec > NOW() ORDER BY czas_koniec ");	
+	if (isset($_GET['kategoria']) && $_GET['kategoria'] != "undefined")
+	{
+		$kategoria = mysql_fetch_assoc(mysql_query("SELECT id FROM kategorie WHERE nazwa = '".$_GET['kategoria']."'"));
+		$zapytanie = mysql_query("SELECT * FROM aukcje WHERE czas_koniec > NOW() AND kategoria = '".$kategoria['id']."' ORDER BY czas_koniec ");	
+	} else
+		$zapytanie = mysql_query("SELECT * FROM aukcje WHERE czas_koniec > NOW() ORDER BY czas_koniec ");	
 	
 	$ile = mysql_num_rows($zapytanie);
 	$strona = 1;
 	$ile_na_stronie = 20;
+	
+	
+	if ($ile == 0)
+	{
+		echo "<h1> Brak aukcji, proszę sprawdzić później! </h1>";
+	}
 	
 	if ($ile > $ile_na_stronie)	
 	{
@@ -38,8 +46,8 @@
 		$przedmiot = mysql_fetch_assoc(mysql_query("SELECT * FROM przedmioty LEFT JOIN aukcja_przedmiot ON przedmioty.id = aukcja_przedmiot.przedmiotId 
 													WHERE aukcja_przedmiot.aukcjaId = $aukcja[id]"));
 		echo "<div class = \"aukcja\" id = \"aukcja$aukcja[id]\">";
-		echo "<div class = \"miniatura\">";
-		if ($przedmiot['obraz'] != "" && file_exists("img/przedmioty/$przedmiot[obraz]"))	// ładuj miniatury AJAXem!
+		echo "<div class = \"miniatura klikalne\" onClick = \"tresc('aukcja','$aukcja[id]');\">";
+		if ($przedmiot['obraz'] != "" && file_exists("img/przedmioty/$przedmiot[obraz]"))
 			echo "<img src = \"img/przedmioty/$przedmiot[obraz]\">";
 		else
 			echo "<img src = \"img/przedmioty/brak.png\">";

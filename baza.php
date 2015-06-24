@@ -1,6 +1,5 @@
 ﻿<?php
-	
-	$db = mysql_connect("mysql.hostinger.pl", "u322806910_isi", "info3pk");
-	mysql_select_db("u322806910_isi");
-	
+	$db = mysql_connect("localhost", "root", "root");
+	mysql_select_db("isi");
+	mysql_set_charset("utf8");
 ?>

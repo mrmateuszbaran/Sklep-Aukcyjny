@@ -26,6 +26,22 @@ function sprawdz_form_rejestracja()
 	return true;
 }
 
+function sprawdz_form_reset()
+{
+	var form = document.forms["form_reset"];
+	if (form.login.value.length < 3 || form.email.value.length < 5)
+	{
+		alert("Uzupelnij wszystkie pola");
+		return false;
+	}
+	return true;
+}
+
+function resetuj_haslo(form)
+{
+	zapytanieAjax("resetuj.php?login="+form.login.value+"&email="+form.email.value, function(odp) { if (odp != "sukces") okno_informacji(odp); });
+}
+
 function toggle_listener(e, ktory)
 {	
 	var level = 0;
@@ -53,8 +69,6 @@ function toggle_powiadomienia()
 	{
 		document.getElementById("powiadomienia").setAttribute("src", "powiadomienie.png");
 		nowe_powiadomienia = false;
-		// TODO
-		// przeczytane = 1 w bazie!
 		div_powiadomienia = document.createElement("div");
 		div_powiadomienia.setAttribute("id", "div_powiadomienia");
 		var img = document.createElement("img");
@@ -66,23 +80,11 @@ function toggle_powiadomienia()
 		hr.style.marginBottom = "0px";
 		div_powiadomienia.appendChild(hr);
 		// TODO
-		// Diva z treścią zrobić w powiadomienia.php
-		// Margines dodać do wewnętrznego diva, tak żeby nie nachodziło na napis "Powiadomienia"
-		// Ograniczyć marginesy
 		// Jeśli treści więcej to w powiadomienia.php dodać przycisk "Pokaż więcej" (np. max 20 powiadomień)
 		
-		// vvv zamienić na zapytanieAjax() (?) vvv
-		zapytanieAjax("powiadomienia.php?niepotrzebne=usun", 
+		zapytanieAjax("powiadomienia.php?przeczytane=true", 
 			function(odp) { 
 				div_powiadomienia.innerHTML += odp;
-				div_powiadomienia.onwheel = function(e) { 
-												var div = document.getElementById("powiadomienia_tresc");
-												if (e.deltaY < 0) 
-													div.style.marginTop = (parseInt(div.style.marginTop) + div.firstChild.offsetHeight) + "px"; 
-												else if (e.deltaY > 0)
-													 div.style.marginTop = (parseInt(div.style.marginTop) - div.firstChild.offsetHeight) + "px"; 
-												return false; 
-											};
 			});
 		
 		document.body.appendChild(div_powiadomienia);
@@ -112,7 +114,9 @@ function toggle_wiadomosci()
 		img.setAttribute("id", "arrow_wiadomosci");
 		div_wiadomosci.appendChild(img);
 		div_wiadomosci.appendChild(document.createTextNode("Wiadomości"));
-		div_wiadomosci.appendChild(document.createElement("hr"));
+		var hr = document.createElement("hr");
+		hr.style.marginBottom = "0px";
+		div_wiadomosci.appendChild(hr);
 		document.body.appendChild(div_wiadomosci);
 		document.addEventListener('click', funkcja_wiadomosci, true);
 	} else
@@ -121,6 +125,7 @@ function toggle_wiadomosci()
 		{
 			div_wiadomosci.removeChild(div_wiadomosci.firstChild);
 		}
+		//document.body.removeChild(document.getElementById("arrow_wiadomosci"));
 		div_wiadomosci.parentNode.removeChild(div_wiadomosci);
 		document.removeEventListener("click", funkcja_wiadomosci, true);
 	}
@@ -159,11 +164,7 @@ function updatePowiadomienia(odp)
 			blink(button, 500);
 			nowe_powiadomienia = true;
 			button.setAttribute("src", "powiadomienie_new.png");
-			console.log("nowe powiadomienia!");
 		}
-	} else
-	{	
-		console.log("brak nowe powiadomienia!");
 	}
 }
 
@@ -211,7 +212,6 @@ function ajax()
 				{
 					if (prowadzi == login)
 					{
-						//alert("Wygrałeś aukcję!");
 						var pow = document.getElementById("powiadomienia");
 						setTimeout(function() { blink(pow, 1250); }, 500);
 					}
@@ -221,10 +221,7 @@ function ajax()
 				}
 				if (!aukcja && czasDoKonca != "KONIEC!" && _widok == "aukcje")
 				{
-					aukcja = dodaj_div_aukcja(split);
-					//TODO
-					//oddzielić funkcje panelu administratora od tych ze strony głównej!
-					//dodawanie aukcji ulepszyć, w odpowiednie miejsce wrzucić
+					//okno_informacji("nowe aukcje!");//aukcja = dodaj_div_aukcja(split);
 				}
 				if (!aukcja)
 					continue;
@@ -247,32 +244,32 @@ function ajax()
 	xmlhttp.send();
 }
 
-function dodaj_div_aukcja(dane)
-{
-	var id = dane[0].trim();
-	var czasDoKonca = dane[1].trim();
-	var czasKoniec = dane[2].trim();
-	var cena = dane[3].trim();
-	var prowadzi = dane[4].trim();
-	var obraz = "kredyty.png";		// TODO!
-	var nazwa = "Nowa aukcja xD"; 	// TODO! Może dodawać w ajax() tylko dla nowych przedmiotów?
-	var podbicie = 1; 				// TODO!
+// function dodaj_div_aukcja(dane)
+// {
+	// var id = dane[0].trim();
+	// var czasDoKonca = dane[1].trim();
+	// var czasKoniec = dane[2].trim();
+	// var cena = dane[3].trim();
+	// var prowadzi = dane[4].trim();
+	// var obraz = "kredyty.png";		// TODO!
+	// var nazwa = "Nowa aukcja xD"; 	// TODO! Może dodawać w ajax() tylko dla nowych przedmiotów?
+	// var podbicie = 1; 				// TODO!
 	
 	
-	var div_aukcja = document.createElement("div");
-	div_aukcja.setAttribute("class", "aukcja");
-	div_aukcja.setAttribute("id", "aukcja"+id);
-	div_aukcja.innerHTML = "<div class = \"miniatura\">" +
-							"<img src = \"img/przedmioty/"+obraz+"\"></div><br>"+nazwa+"<hr>" +
-							"<span class = \"aukcja-cena\">"+cena/100+"</span> zł<br>Prowadzi: <span class = \"aukcja-prowadzi\">"+prowadzi+"</span><br>" +
-							"<div class = \"aukcja-czas\" czasKoniec = \""+czasKoniec+"\">"+czasDoKonca+"</div><br>" +
-							"<button class = \"aukcja-podbij\" onClick = \"podbij(this,'3');\"> Podbij (x "+podbicie+") </button></div>";
-	document.getElementById("tresc_tresc").appendChild(div_aukcja);	// TODO
+	// var div_aukcja = document.createElement("div");
+	// div_aukcja.setAttribute("class", "aukcja");
+	// div_aukcja.setAttribute("id", "aukcja"+id);
+	// div_aukcja.innerHTML = "<div class = \"miniatura\">" +
+							// "<img src = \"img/przedmioty/"+obraz+"\"></div><br>"+nazwa+"<hr>" +
+							// "<span class = \"aukcja-cena\">"+cena/100+"</span> zł<br>Prowadzi: <span class = \"aukcja-prowadzi\">"+prowadzi+"</span><br>" +
+							// "<div class = \"aukcja-czas\" czasKoniec = \""+czasKoniec+"\">"+czasDoKonca+"</div><br>" +
+							// "<button class = \"aukcja-podbij\" onClick = \"podbij(this,'3');\"> Podbij (x "+podbicie+") </button></div>";
+	// document.getElementById("tresc_tresc").appendChild(div_aukcja);	// TODO
 																	// Dodaj w odpowiednim miejscu!
 																	// Uwzględnij stronicowanie...
 																	// Pętla po wszystkich aukcjach na stronie?
-	return div_aukcja;
-}
+	// return div_aukcja;
+// }
 
 function podbij(przycisk, aukcjaID)
 {
@@ -616,7 +613,46 @@ function okno_informacji(wiadomosc)
 
 function okno_bledu(wiadomosc)
 {
+	if (okno_info_pokazane)
+	{
+		alert("okno już jest!");
+		return;
+	}
+
+	okno_info_pokazane = true;
 	
+	var okno = document.createElement("div");
+	okno.setAttribute("id", "okno-bledu");
+	// STYL DO CSSA !
+	okno.style.background = "rgba(125,20,55,0.75)";
+	okno.style.border = "1px lightblue solid";
+	okno.style.position = "fixed";
+	okno.style.width = "250px";
+	okno.style.height = "180px";
+	okno.style.left = "50%";
+	okno.style.top = "50%";
+	okno.style.margin = "-90px 0px 0px -125px";
+	okno.style.textAlign = "center";
+	okno.style.padding = "5px";
+	okno.style.color = "white";
+	
+	var gora = document.createElement("div");
+	gora.setAttribute("id", "gora");
+	gora.style.width = "250px";
+	gora.style.height = "100px";
+	gora.style.display = "table-cell";
+	gora.style.verticalAlign = "middle";
+	var ok = document.createElement("img");
+	ok.setAttribute("src", "img/nook.png");
+	ok.setAttribute("class", "klikalne");
+	ok.onclick = function() { ok.onclick = null; zniszcz(okno, 50, 750); setTimeout(function() { okno_info_pokazane = false; }, 750) };
+	
+	gora.appendChild(document.createTextNode(wiadomosc));
+	okno.appendChild(gora);
+	okno.appendChild(document.createElement("hr"));
+	okno.appendChild(ok);
+	
+	document.body.appendChild(okno);
 }
 
 function zapisz_uzytkownika(tr)
@@ -1135,7 +1171,11 @@ function zapytanieAjax(zapytanie, f_powodzenie, f_blad)
 		{
 			if (f_powodzenie)
 				f_powodzenie(xmlhttp.responseText);
+		} else if(xmlhttp.readyState==4 && f_blad)
+		{
+			f_blad(xmlhttp.responseText);
 		}
+			
 	};
 	xmlhttp.open("GET", zapytanie+"&t=" + Math.random(), true);
 	xmlhttp.send();
@@ -1352,10 +1392,15 @@ function panel(widok)
 
 var _widok = 'aukcje';
 
-function tresc(widok)
+function tresc(widok, param)
 {
 	_widok = widok;
-	zapytanieAjax("tresc.php?widok="+widok, function(response) { document.getElementById('tresc').innerHTML = response; });
+	if (widok == "aukcja" || widok == "faktura")
+		zapytanieAjax("tresc.php?widok="+widok+"&id="+param, function(response) { document.getElementById('tresc').innerHTML = response; });
+	else if (widok == "aukcje")
+		zapytanieAjax("tresc.php?widok="+widok+"&kategoria="+param, function(response) { document.getElementById('tresc').innerHTML = response; });
+	else
+		zapytanieAjax("tresc.php?widok="+widok, function(response) { document.getElementById('tresc').innerHTML = response; });
 }
 
 
@@ -1381,8 +1426,6 @@ function konto_zmien_haslo(form)
 {
 	var stare = form.stare.value;
 	var nowe = form.nowe1.value;
-	// TODO
-	// AJAX POST!
 	zapytanieAjax("konto/nowe_haslo.php?stare="+stare+"&nowe="+nowe, function(odp) { alert(odp); });
 }
 
@@ -1410,7 +1453,6 @@ function sprawdz_formularz(form)
 	switch (form.name)
 	{
 		case "konto-dane-form":
-			//sprawdz wszystkie pola
 			var imie = form.imie.value;
 			var nazwisko = form.nazwisko.value;
 			var email = form.email.value;
@@ -1446,4 +1488,87 @@ function init_sprawdz_formularz(form)
 	if (sprawdz_formularz_interval != null)
 		clearInterval(sprawdz_formularz_interval);
 	sprawdz_formularz_interval = setInterval(function() { sprawdz_formularz(form); }, 100);
+}
+
+function kupPremium()
+{
+	zapytanieAjax("kupPremium.php?niepotrzebne=usun", function(odp) { 
+		if (odp == "sukces")
+		{
+			var menu_poziom = document.getElementById("menu-poziom");
+			blink(menu_poziom);
+			menu_poziom.innerHTML = parseInt(menu_poziom.innerHTML) + 1;
+			var tresc_poziom = document.getElementById("tresc-poziom");
+			blink(tresc_poziom);
+			tresc_poziom.innerHTML = parseInt(tresc_poziom.innerHTML) + 1;
+		}
+		else 
+			okno_informacji(odp);});
+}
+
+function kupKredyty(ile, cena, email)
+{
+	window.location = "zaplac.php?cena="+cena+"&nazwa=Kredyty ("+ile+")&email="+email;
+	/*zapytanieAjax("kupKredyty.php?ile="+ile, function(odp) { 
+			okno_informacji("Zakupiłeś "+ile+" kredytów!");
+			var kredyty = document.getElementById("uzytkownik-kredyty");
+			blink(kredyty);
+			kredyty.innerHTML = parseInt(kredyty.innerHTML) + parseInt(ile);
+		});*/
+}
+
+function dodaj_adres(btn)
+{
+	var ostatni = btn.previousSibling.lastChild;
+	zapytanieAjax("konto/nowyAdres.php?niepotrzebne=usun", function(odp) { 
+		var nowy = document.createElement("table");
+		nowy.setAttribute("class", "konto-tabela");
+		nowy.innerHTML = odp;
+		ostatni.parentNode.insertBefore(nowy, ostatni.nextSibling);
+		});
+}
+
+function zapisz_adres(btn)
+{
+	var table = btn.parentNode.parentNode.parentNode;
+	var id = parseInt(btn.getAttribute("adresId").substr(5));
+	var adres_tabela = document.getElementById("adres"+id);
+	var miejscowosc = table.getElementsByTagName("input")[0].value;
+	var ulica = table.getElementsByTagName("input")[1].value;
+	var nr_domu = table.getElementsByTagName("input")[2].value;
+	var nr_mieszkania = table.getElementsByTagName("input")[3].value;
+	var kod_pocztowy = table.getElementsByTagName("input")[4].value;
+	var wojewodztwo = table.getElementsByTagName("input")[5].value;
+	
+	zapytanieAjax("konto/zapiszAdres.php?id="+id+"&kod_pocztowy="+kod_pocztowy+"&ulica="+ulica+"&miejscowosc="+miejscowosc+"&wojewodztwo="+wojewodztwo
+		+"&nr_domu="+nr_domu+"&nr_mieszkania="+nr_mieszkania, 
+		function(odp) {
+			if (odp.substr(0,6) == "sukces")
+			{
+				btn.setAttribute("adresId", "adres"+odp.substr(6));
+				okno_informacji("Zapisano poprawnie!");
+			}
+			else
+				okno_informacji(odp);
+		});
+}
+
+function usun_adres(btn)
+{
+	var table = btn.parentNode.parentNode.parentNode;
+	var id = parseInt(btn.parentNode.nextSibling.nextSibling.firstChild.getAttribute("adresId").substr(5));
+				
+	
+	if (id != 0)
+	{
+		zapytanieAjax("konto/usunAdres.php?id="+id, function(odp) { if (odp == "sukces") zniszcz(table.parentNode); else okno_bledu(odp); }, function(odp) { okno_bledu(odp); });
+	} else
+	{
+		zniszcz(table.parentNode);
+	}
+}
+
+function zaplac(id, cena, nazwa, email)
+{
+	window.location = "zaplac.php?id="+id+"&cena="+cena+"&nazwa="+nazwa+"&email="+email;
 }

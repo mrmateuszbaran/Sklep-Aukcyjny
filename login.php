@@ -14,6 +14,8 @@
 			$zapytanie = mysql_query("SELECT * FROM uzytkownicy WHERE login = '$_POST[login]' AND haslomd5 = md5('$_POST[haslo]')");
 			if (mysql_num_rows($zapytanie) > 0)
 			{
+				if ($_POST['pamietaj'] == "true")
+					setcookie("sklep-login", $_POST['login'], time()+60*60*24*100,'/');
 				$rezultat = mysql_fetch_array($zapytanie);
 				$adres = "null";
 				$_SESSION['uzytkownik'] = new Uzytkownik($rezultat['login'], $rezultat['imie'], $rezultat['nazwisko'], $adres, $rezultat['email'], 
@@ -29,7 +31,6 @@
 	}
 	
 	header("Location: index.php");
-//	header("Location: /");
 	exit();
 	
 ?>

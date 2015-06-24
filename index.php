@@ -1,42 +1,30 @@
 ﻿<?php
-	//ob_clean();
-	//$content = "<page>".file_get_contents("test.html")."</page>";
-	
-	
-	/*//DOMPDF
-
-	require_once '/dompdf/dompdf_config.inc.php';
-	$htmlString = file_get_contents("test.html");
-	 
-	$dompdf = new DOMPDF();
-	$dompdf->load_html($htmlString);
-	$dompdf->set_paper("A4");
-	$dompdf->render();
-	$out =  $dompdf->output();
-	file_put_contents("sample.pdf", $out);
-	/**/
-	
-	
-	///////////////////////////////////////
 	require_once("uzytkownik.inc");
 	session_start();
-
-	
-	//session_destroy();
-	//unset($_SESSION);
-	//include 'db.php';	// baza danych
+	require_once("baza.php");
 	
 	if (!isset($_SESSION['init']))
 	{
-		//unset($_SESSION);
 		session_regenerate_id();
 		$_SESSION['init'] = $_SERVER['REMOTE_ADDR'];
 	}
 	
 	if ($_GET['strona'] == "logout")
 	{
+		unset($_COOKIE['sklep-login']);
+		setcookie('sklep-login', null, -1, '/');
 		unset($_SESSION['uzytkownik']);
 		header("Location: index.php");
+	}
+	
+	if (isset($_COOKIE['sklep-login']))
+	{
+		$user = $_COOKIE['sklep-login'];
+		$zapytanie = mysql_query("SELECT * FROM uzytkownicy WHERE login = '$user'");
+		$rezultat = mysql_fetch_array($zapytanie);
+		$adres = "null";
+		$_SESSION['uzytkownik'] = new Uzytkownik($rezultat['login'], $rezultat['imie'], $rezultat['nazwisko'], $adres, $rezultat['email'], 
+															$rezultat['haslomd5'], $rezultat['kredyty'], $rezultat['poziom']);
 	}
 	
 	if (isset($_SESSION['error']))
@@ -44,7 +32,7 @@
 		$errors = explode(";", $_SESSION['error']);
 		foreach ($errors as $error)
 		{
-			echo $error;
+			echo "<script>okno_informacji('".$error."');</script>";
 		}
 		unset($_SESSION['error']);
 	}
@@ -80,37 +68,27 @@
 		</div>
 
 		<div id = "kategorie">
-			<!-- PHP! Dynamicznie z bazy! -->
-			<a href = "#"> Wszystko </a>
+			<span class = "klikalne" onClick = "tresc('aukcje');"> Wszystko </span>
 			<div style = "border:1px rgba(0,0,0,0.25) solid; width:0px; margin:0px 2px 0px 5px; line-height:47px;"> &nbsp; </div>
-			<a href = "#"> Elektronika </a>
+			<span class = "klikalne" onClick = "tresc('aukcje', 'Elektronika');"> Elektronika </span>
 			<div style = "border:1px rgba(0,0,0,0.25) solid; width:0px; margin:0px 2px 0px 2px; line-height:47px;"> &nbsp; </div>
-			<a href = "#"> Odzież </a>
+			<span class = "klikalne" onClick = "tresc('aukcje', 'Odzież');"> Odzież </span>
 			<div style = "border:1px rgba(0,0,0,0.25) solid; width:0px; margin:0px 2px 0px 2px; line-height:47px;"> &nbsp; </div>
-			<a href = "#"> AGD </a>
+			<span class = "klikalne" onClick = "tresc('aukcje', 'AGD');"> AGD </span>
 			<div style = "border:1px rgba(0,0,0,0.25) solid; width:0px; margin:0px 2px 0px 2px; line-height:47px;"> &nbsp; </div>
-			<a href = "#"> Drobiazgi </a>
+			<span class = "klikalne" onClick = "tresc('aukcje', 'Drogiazgi');"> Drobiazgi </span>
 			
-			<a href = "#" style = "float:right;"> Kredyty </a>
+			<span class = "klikalne" style = "float:right;" onClick = "tresc('kredyty');"> Kredyty </span>
 			<div style = "border:0px; box-shadow:1px 0px 1px #2a586d, 2px 0px 2px #2a586d; width:1px; margin-right:3px; line-height:48px; float:right;"> &nbsp; </div>
 		</div>
 
 		<div id = "tresc">
-			<div id = "tresc_szukaj">
-			<?php 
-				include "szukaj.php";
-			?>
-			</div>
-			<div id = "tresc_tresc">
-			<?php 
-				include "przedmioty.php";
-			?>
-			</div>
+			<script>tresc('aukcje');</script>
 		</div>
+	</div>
+	<div id = "stopka">
+		Sklep aukcyjny @ 2015<br> Mateusz Baran, Piotr Frey, Sylwia Jakubas, Bartosz Klink, Andrzej Lekki 
 	</div>
 </body>
 
 </html>
-<?php
-	//session_destroy();
-?>

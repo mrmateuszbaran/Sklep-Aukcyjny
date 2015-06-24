@@ -12,7 +12,7 @@
 	{
 		$przedmiot = mysql_fetch_assoc(mysql_query("SELECT * FROM przedmioty LEFT JOIN aukcja_przedmiot ON przedmioty.id = aukcja_przedmiot.przedmiotId 
 													WHERE aukcja_przedmiot.aukcjaId = $aukcja[id]"));
-		echo "<div class = \"aukcja\">";
+		echo "<div class = \"aukcja klikalne\" onClick = \"tresc('aukcja', '$aukcja[id]');\">";
 		echo "<div class = \"miniatura\">";
 		if ($przedmiot['obraz'] != "" && file_exists("../img/przedmioty/$przedmiot[obraz]"))	// ładuj miniatury AJAXem!
 			echo "<img src = \"img/przedmioty/$przedmiot[obraz]\">";

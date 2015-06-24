@@ -2,6 +2,20 @@
 	transition: all 0.5s ease-in-out;
 }
 
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/1YwB1sO8YE1Lyjf12WNiUA.woff2) format('woff2'), url(http://fonts.gstatic.com/s/lato/v11/9k-RPmcnxYEPm8CNFsH2gg.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans'), local('DroidSans'), url(http://fonts.gstatic.com/s/droidsans/v6/s-BiyweUPV0v-yRb-cjciPk_vArhqVIZ0nv9q090hN8.woff2) format('woff2'), url(http://fonts.gstatic.com/s/droidsans/v6/s-BiyweUPV0v-yRb-cjciBsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
 body {
 	text-align: center;
 	margin: 0px;
@@ -10,6 +24,7 @@ body {
 	background-color: #8ad751;/* #8ad751; */
 	color: white;
 	text-shadow: 0px 0px 2px black;
+	font-family: Droid Sans, Lato, Arial;
 }
 
 div {
@@ -66,7 +81,7 @@ button:hover, input[type=submit]:hover {
 
 #kontener {
 	width: 1200px;
-	height: 685px;
+	min-height: 685px;
 	margin-top: -2px;
 	background-color: #bce6f9;
 }
@@ -87,9 +102,23 @@ button:hover, input[type=submit]:hover {
     vertical-align: top;
 }
 
+#login_box td {
+	text-align: right;
+}
+
 #login_box  > form, #login_box  > div{
 	margin-left: 10px;
+	margin-right: 10px;
 	margin-top: 15px;
+}
+
+#stopka {
+	background-color: rgba(20,20,100,0.5);
+	margin-top: 20px;
+	color: white;
+	width: 1200px;
+	display: block;
+	line-height: 25px;
 }
 
 #menu {
@@ -135,7 +164,7 @@ button:hover, input[type=submit]:hover {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0f2fa', endColorstr='#485b64',GradientType=0 ); /* IE6-9 */
 }
 
-#kategorie > a {
+#kategorie > .klikalne {
 	display: inline-block;
 	height: 50px;
 	padding: 0px 5px 0px 5px;
@@ -144,7 +173,7 @@ button:hover, input[type=submit]:hover {
 	font-size: 18px;
 }
 
-#kategorie > a:first-child {
+#kategorie > .klikalne:first-child {
 	padding: 0px 10px 0px 10px;
 	margin-right: -5px;
 }
@@ -153,11 +182,14 @@ button:hover, input[type=submit]:hover {
 	width: 1200px;
 	min-height: 460px;
 	border: 0;
+	padding-bottom: 10px;
 }
 
 #tresc_tresc {
-	width: 970px;
-	height: 450px;
+	/*width: 970px;*/
+	width: 1180px;	
+	min-height: 450px;
+	padding-bottom: 10px;
 	background-color: #4a788d;
 }
 
@@ -201,7 +233,7 @@ button:hover, input[type=submit]:hover {
 	width: 240px;
 	height: 200px;
 	position: absolute;
-	margin: 150px 0px 0px -402px;
+	margin: -610px 0px 0px 200px;
 	background-color: #e0f2fa;
 	color: black;
 	text-shadow: 0px 0px 2px white;
@@ -220,7 +252,7 @@ button:hover, input[type=submit]:hover {
 	position: absolute;
 	width: 16px;
 	height: 16px;
-	margin: 135px 0px 0px -303px;
+	margin: -625px 0px 0px 292px;
 	z-index: 999;
 }
 
@@ -228,7 +260,8 @@ button:hover, input[type=submit]:hover {
 	position: absolute;
 	width: 16px;
 	height: 16px;
-	margin: -21px 0px 0px 60px;
+	margin: -625px 0px 0px 292px;
+	z-index: 999;
 }
 
 .klikalne {
@@ -331,14 +364,46 @@ button:hover, input[type=submit]:hover {
 }
 
 .powiadomienie-wygrana-nowe {
-	xbackground: radial-gradient(ellipse at center, rgba(125,255,102,0.75) 0%, rgba(125,255,100,0.3) 100%);
-	background: rgba(100, 255, 50, 0.1);
-	xbox-shadow: inset 0px 0px 20px lightgreen, inset 0px 0px 10px lightgreen, inset 0px 0px 5px lightgreen;
+	background: rgba(100, 255, 50, 0.25);
+	box-shadow: inset 0px 0px 25px green;
 }
 .powiadomienie-wygrana {
+	background: rgba(100, 255, 50, 0.1);
 }
 .powiadomienie-koniec_aukcji-nowe {
-	xbackground: radial-gradient(ellipse at center, rgba(255,102,102,0.75) 0%, rgba(255,125,100,0.3) 100%);
+	background: rgba(255, 100, 50, 0.25);
+	box-shadow: inset 0px 0px 25px red;
+}
+.powiadomienie-koniec_aukcji {
 	background: rgba(255, 100, 50, 0.1);
-	xbox-shadow: inset 0px 0px 20px #FF6666, inset 0px 0px 10px #FF6666, inset 0px 0px 5px #FF6666;
+}
+
+#kup-kredyty-table {
+	width: 90%;
+	margin: auto;
+	font-size: 22px;
+	margin-top: 20px;
+	background-color: rgba(0,0,0,0.25);
+	border: 1px rgba(225, 225, 250, 0.75) solid;
+}
+#kup-kredyty-table tr:first-child {
+	background-color: rgba(0,0,0,0.25);
+	font-size: 18px;
+}
+#kup-kredyty-table tr td {
+	padding: 10px;
+}
+#kup-kredyty-table tr:not(:last-child) td {
+	border-bottom: 1px rgba(225, 225, 250, 0.5) solid;
+}
+#kup-kredyty-table tr td:nth-child(2) {
+	background-color: rgba(0,0,0,0.5);
+}
+#kup-kredyty-table button {
+	padding: 10px;
+	font-size: 18px;
+	width: 150px;
+}
+.elitarny {
+	box-shadow: inset 0px 0px 100px rgb(230, 210, 0), 0px 0px 5px rgb(230,210,0);
 }

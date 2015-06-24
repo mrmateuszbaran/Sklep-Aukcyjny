@@ -8,7 +8,7 @@
 					<td style = "width:55px;">
 						Login: 
 					</td>
-					<td>
+					<td colspan = "2">
 						<input name = "login" />
 					</td>
 				</tr>
@@ -16,22 +16,21 @@
 					<td>
 						Hasło: 
 					</td>
-					<td>
+					<td colspan = "2">
 						<input type = "password" name = "haslo" />
 					</td>
 				</tr>
 				<tr> 
-					<td style = "font-size:12px;">
-					</td>
-					<td>
+					<td colspan = "3">
 						Pamiętaj logowanie
-						<input type = "checkbox" name = "pamietaj" /><br />
+						<input type = "checkbox" name = "pamietaj" value = "true" /><br />
 					</td>
 				</tr>
 				<tr> 
-					<td>
+					<td colspan = "2" style = "width:150px; text-align:left;">
+						<span class = "klikalne" onClick = "tresc('reset');">Reset hasła</span>
 					</td>
-					<td style = "text-align:right;">
+					<td style = "width:80px;">
 						<input type = "submit" value = "Zaloguj się" />
 					</td>
 				</tr>

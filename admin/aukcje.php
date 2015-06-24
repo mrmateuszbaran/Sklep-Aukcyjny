@@ -23,8 +23,6 @@
 			<td style = "width:120px;">Prowadzi</td>
 		</tr>
 HEREDOC;
-	
-	
 	while ($aukcja = mysql_fetch_assoc($zapytanie))
 	{	
 		echo <<<HEREDOC
